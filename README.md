@@ -8,12 +8,11 @@
 
 <img width="7680" height="4320" alt="든든compression" src="https://github.com/user-attachments/assets/cf0901e9-8b97-4ac7-928f-d96e4e362250" />
 
----
+
 ## 👨‍👩‍👧‍👦 Back Team
 
 - BE: 김지원, 김채민, 박연지
 
----
 ## 🌿 브랜치 전략
 
 ```bash
@@ -160,7 +159,6 @@ ex) 메서드 XXX의 이름을 더 잘 짓고 싶은데 혹시 좋은 명칭이 
 ![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)  
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)  
 
----
 ## ☁️ Architecture
 
 <img width="1328" height="1186" alt="Infra Architecture" src="https://github.com/user-attachments/assets/c2f42b80-2919-4b43-8ab2-aa25196b71c6" />
