@@ -133,7 +133,8 @@ ex) 메서드 XXX의 이름을 더 잘 짓고 싶은데 혹시 좋은 명칭이 
 ### 🔐 Security
 ![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?logo=springsecurity&logoColor=white)  
 ![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white)  
-![CORS](https://img.shields.io/badge/CORS-FF6F00?logo=icloud&logoColor=white)
+![CORS](https://img.shields.io/badge/CORS-FF6F00?logo=icloud&logoColor=white)  
+![HTTPS](https://img.shields.io/badge/HTTPS-0052CC?logo=letsencrypt&logoColor=white)  
 
 ### 🗄 Database
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white)  
@@ -144,8 +145,7 @@ ex) 메서드 XXX의 이름을 더 잘 짓고 싶은데 혹시 좋은 명칭이 
 ![AWS EC2](https://img.shields.io/badge/AWS%20EC2-FF9900?logo=amazonaws&logoColor=white)  
 ![MinIO (S3 Compatible)](https://img.shields.io/badge/MinIO%20(S3%20Compatible)-C72E49?logo=minio&logoColor=white)  
 ![DuckDNS](https://img.shields.io/badge/DuckDNS-2C8EBB?logo=duckduckgo&logoColor=white)  
-![Nginx](https://img.shields.io/badge/Nginx-009639?logo=nginx&logoColor=white)  
-![HTTPS](https://img.shields.io/badge/HTTPS-0052CC?logo=letsencrypt&logoColor=white)  
+![Nginx](https://img.shields.io/badge/Nginx-009639?logo=nginx&logoColor=white)   
 
 ### 📑 API & Docs
 ![OpenAPI](https://img.shields.io/badge/OpenAPI-6BA539?logo=openapiinitiative&logoColor=white)  
