@@ -116,7 +116,8 @@ ex) 메서드 XXX의 이름을 더 잘 짓고 싶은데 혹시 좋은 명칭이 
 
 ## 🗃️ ERD
 
-<img width="1620" height="1272" alt="DNDN_ERD_최종" src="https://github.com/user-attachments/assets/56cc128a-d2fc-4a39-848f-33d8d58794d9" />
+<img width="2030" height="1112" alt="DNDN_ERD_최종 (1)" src="https://github.com/user-attachments/assets/d10c8942-0dfe-4763-92f6-df98013f1fd4" />
+
 
 
 
