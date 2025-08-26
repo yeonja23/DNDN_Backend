@@ -118,6 +118,9 @@ ex) 메서드 XXX의 이름을 더 잘 짓고 싶은데 혹시 좋은 명칭이 
 
 <img width="2030" height="1112" alt="DNDN_ERD_최종 (1)" src="https://github.com/user-attachments/assets/d10c8942-0dfe-4763-92f6-df98013f1fd4" />
 
+## ☁️ Architecture
+
+<img width="1328" height="1186" alt="Infra Architecture" src="https://github.com/user-attachments/assets/c2f42b80-2919-4b43-8ab2-aa25196b71c6" />
 
 
 
