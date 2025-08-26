@@ -1,6 +1,13 @@
 # DNDN-BackEnd-Repository
 
-든든팀의 백엔드 레포지토리입니다.
+든든팀의 백엔드 레포지토리
+
+당신에게 필요한 복지, 든든하게 챙기세요
+맞춤형 복지 안내 플랫폼
+---
+
+<img width="7680" height="4320" alt="든든compression" src="https://github.com/user-attachments/assets/cf0901e9-8b97-4ac7-928f-d96e4e362250" />
+
 
 ---
 
