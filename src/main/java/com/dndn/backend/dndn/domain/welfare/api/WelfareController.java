@@ -38,8 +38,11 @@ public class WelfareController {
             @ApiResponse(responseCode = "COMMON_200", description = "성공입니다."),
             @ApiResponse(responseCode = "COMMON500", description = "서버 에러, 관리자에게 문의 바랍니다.")
     })
-    public BaseResponse<WelfareListResDto> getAllWelfare() {
-        WelfareListResDto res = welfareService.welfareFindAll(1, 100);
+    public BaseResponse<WelfareListResDto> getAllWelfare(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        WelfareListResDto res = welfareService.welfareFindAll(page, size);
         return BaseResponse.onSuccess(SuccessStatus.OK, res);
     }
 
@@ -70,8 +73,12 @@ public class WelfareController {
             @ApiResponse(responseCode = "COMMON400", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "COMMON500", description = "서버 에러, 관리자에게 문의 바랍니다.")
     })
-    public BaseResponse<WelfareListResDto> getWelfareByTitle(@RequestParam String title) {
-        WelfareListResDto res = welfareService.welfareFindByTitle(title);
+    public BaseResponse<WelfareListResDto> getWelfareByTitle(
+            @RequestParam String title,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        WelfareListResDto res = welfareService.welfareFindByTitle(title, page, size);
         return BaseResponse.onSuccess(SuccessStatus.OK, res);
     }
 
@@ -94,9 +101,12 @@ public class WelfareController {
     public BaseResponse<WelfareListResDto> getByCategory(
             @RequestParam LifeCycle lifeCycle,
             @RequestParam(required = false) List<HouseholdType> householdTypes,
-            @RequestParam(required = false) List<InterestTopic> interestTopics
+            @RequestParam(required = false) List<InterestTopic> interestTopics,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
-        WelfareListResDto res = welfareService.welfareFindByCategory(lifeCycle, householdTypes, interestTopics);
+        WelfareListResDto res = welfareService.welfareFindByCategory(
+                lifeCycle, householdTypes, interestTopics, page, size);
         return BaseResponse.onSuccess(SuccessStatus.OK, res);
 
     }
@@ -119,9 +129,12 @@ public class WelfareController {
             @RequestParam @NotBlank String keyword,
             @RequestParam LifeCycle lifeCycle,
             @RequestParam(required = false) List<HouseholdType> householdTypes,
-            @RequestParam(required = false) List<InterestTopic> interestTopics
+            @RequestParam(required = false) List<InterestTopic> interestTopics,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
-        WelfareListResDto res = welfareService.welfareSearch(keyword, lifeCycle, householdTypes, interestTopics);
+        WelfareListResDto res = welfareService.welfareSearch(
+                keyword, lifeCycle, householdTypes, interestTopics, page, size);
         return BaseResponse.onSuccess(SuccessStatus.OK, res);
 
     }

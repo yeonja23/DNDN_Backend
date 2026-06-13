@@ -7,13 +7,14 @@ import com.dndn.backend.dndn.domain.user.domain.entity.User;
 import com.dndn.backend.dndn.domain.user.domain.repository.UserRepository;
 import com.dndn.backend.dndn.domain.welfare.api.response.WelfareDetailResDto;
 import com.dndn.backend.dndn.domain.welfare.api.response.WelfareListResDto;
-import com.dndn.backend.dndn.domain.welfare.api.response.WelfareInfoResDto;
 import com.dndn.backend.dndn.domain.welfare.domain.Welfare;
 import com.dndn.backend.dndn.domain.welfare.domain.repository.WelfareRepository;
 import com.dndn.backend.dndn.domain.welfare.exception.WelfareException;
 import com.dndn.backend.dndn.domain.welfare.support.WelfareWithScore;
 import com.dndn.backend.dndn.global.error.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,17 +26,12 @@ import java.util.*;
 public class WelfareServiceImpl implements WelfareService {
 
     private final WelfareRepository welfareRepository;
-    private final UserRepository userRepository;
 
     // 복지 서비스 목록 전체 조회
     @Override
-    public WelfareListResDto welfareFindAll(int page, int numOfRows) {
-        List<Welfare> welfareList = welfareRepository.findAll();
-
-        List<WelfareInfoResDto> welfareInfoResDtoList = welfareList.stream()
-                .map(WelfareInfoResDto::from)
-                .toList();
-        return WelfareListResDto.from(welfareInfoResDtoList);
+    public WelfareListResDto welfareFindAll(int page, int size) {
+        Page<Welfare> result = welfareRepository.findAll(PageRequest.of(page, size));
+        return WelfareListResDto.from(result);
     }
 
     // 복지 id로 복지 서비스 상세 조회
@@ -48,37 +44,29 @@ public class WelfareServiceImpl implements WelfareService {
 
     // 복지 이름으로 복지 서비스 목록 조회
     @Override
-    public WelfareListResDto welfareFindByTitle(String title) {
-        List<Welfare> welfareList = welfareRepository.findByTitleContaining(title);
-
-        List<WelfareInfoResDto> welfareInfoResDtoList = welfareList.stream()
-                .map(WelfareInfoResDto::from)
-                .toList();
-        return WelfareListResDto.from(welfareInfoResDtoList);
+    public WelfareListResDto welfareFindByTitle(String title, int page, int size) {
+        Page<Welfare> result = welfareRepository.findByTitleContaining(title, PageRequest.of(page, size));
+        return WelfareListResDto.from(result);
     }
 
     @Override
     public WelfareListResDto welfareFindByCategory(
             LifeCycle lifeCycle,
             List<HouseholdType> householdTypes,
-            List<InterestTopic> interestTopics
+            List<InterestTopic> interestTopics,
+            int page,
+            int size
     ) {
         // null-safe 처리
         List<HouseholdType> hh = (householdTypes == null) ? Collections.emptyList() : householdTypes;
         List<InterestTopic> it = (interestTopics == null) ? Collections.emptyList() : interestTopics;
 
-        boolean householdsEmpty = hh.isEmpty();
-        boolean interestsEmpty  = it.isEmpty();
-
-        List<Welfare> result = welfareRepository.findByCategoryFilters(
-                lifeCycle, hh, householdsEmpty, it, interestsEmpty
+        Page<Welfare> result = welfareRepository.findByCategoryFilters(
+                lifeCycle, hh, hh.isEmpty(), it, it.isEmpty(),
+                PageRequest.of(page, size)
         );
 
-        List<WelfareInfoResDto> dtoList = result.stream()
-                .map(WelfareInfoResDto::from)
-                .toList();
-
-        return WelfareListResDto.from(dtoList);
+        return WelfareListResDto.from(result);
     }
 
     // 검색어 + 카테고리 복지 서비스 목록 조회
@@ -87,7 +75,9 @@ public class WelfareServiceImpl implements WelfareService {
             String keyword,
             LifeCycle lifeCycle,
             List<HouseholdType> householdTypes,
-            List<InterestTopic> interestTopics
+            List<InterestTopic> interestTopics,
+            int page,
+            int size
     ) {
         if (lifeCycle == null || keyword == null || keyword.isBlank()) {
             throw new WelfareException(ErrorStatus._BAD_REQUEST); // 프로젝트 공통 에러코드에 맞춰 사용
@@ -96,20 +86,14 @@ public class WelfareServiceImpl implements WelfareService {
         List<HouseholdType> hh = (householdTypes == null) ? Collections.emptyList() : householdTypes;
         List<InterestTopic> it = (interestTopics == null) ? Collections.emptyList() : interestTopics;
 
-        boolean householdsEmpty = hh.isEmpty();
-        boolean interestsEmpty  = it.isEmpty();
-
-        List<Welfare> result = welfareRepository.searchByKeywordAndCategory(
+        Page<Welfare> result = welfareRepository.searchByKeywordAndCategory(
                 keyword.trim(), lifeCycle,
-                hh, householdsEmpty,
-                it, interestsEmpty
+                hh, hh.isEmpty(),
+                it, it.isEmpty(),
+                PageRequest.of(page, size)
         );
 
-        List<WelfareInfoResDto> dtoList = result.stream()
-                .map(WelfareInfoResDto::from)
-                .toList();
-
-        return WelfareListResDto.from(dtoList);
+        return WelfareListResDto.from(result);
     }
 
     @Override

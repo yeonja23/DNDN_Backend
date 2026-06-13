@@ -65,8 +65,8 @@ public class CentralWelfareClient {
         UriComponentsBuilder b = UriComponentsBuilder.newInstance()
                 .scheme("https")
                 .host(baseUrl)
-                // ✅ 상세도 list 엔드포인트 사용!
-                .path("/B554287/NationalWelfareInformationsV001/NationalWelfarelistV001")
+                // 상세조회 전용 엔드포인트 (가이드 기준)
+                .path("/B554287/NationalWelfareInformationsV001/NationalWelfaredetailedV001")
                 .queryParam("callTp", "D")
                 .queryParam("servId", servId)
                 .queryParam("serviceKey", rawKey);
