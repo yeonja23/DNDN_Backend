@@ -82,9 +82,9 @@ public class CentralWelfareSyncService {
                         .orElse("상세정보링크 미제공");
 
                 // 카테고리 매핑
-                List<LifeCycle> lifeCycles     = parseLifeCycles(nz(dtl.getLifeArray()));
-                List<HouseholdType> household  = parseHouseholdTypes(nz(dtl.getTrgterIndvdlArray()));
-                List<InterestTopic> interests  = parseInterestTopics(nz(dtl.getIntrsThemaArray()));
+                List<LifeCycle> lifeCycles     = parseLifeCycles(nzOr(item.getLifeArray(), dtl.getLifeArray()));
+                List<HouseholdType> household  = parseHouseholdTypes(nzOr(item.getTrgterIndvdlArray(), dtl.getTrgterIndvdlArray()));
+                List<InterestTopic> interests  = parseInterestTopics(nzOr(item.getIntrsThemaArray(), dtl.getIntrsThemaArray()));
                 Category category = categoryService.findOrCreateCategory(lifeCycles, household, interests);
                 if (category == null) {
                     log.warn("카테고리 null (servId={})", servId);
