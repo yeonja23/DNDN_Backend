@@ -67,11 +67,12 @@ public class CentralWelfareSyncService {
                 // ✅ 상세도 resultCode 체크 제거
                 String title    = nzOr(dtl.getServNm(), item.getServNm(), "제목 미제공");
                 String outline  = nzOr(dtl.getWlfareInfoOutlCn(), item.getServDgst(), "내용 미제공");
+                String summary  = nzOr(item.getServDgst(), dtl.getWlfareInfoOutlCn(), "요약 미제공");
                 String link     = nz(item.getServDtlLink());
                 String eligible = nzOr(dtl.getTgtrDtlCn(), "대상자 정보 미제공");
                 String submit   = nzOr(dtl.getAlwServCn(), "제출서류 정보 미제공");
-                String dept     = nzOr(dtl.getJurMnofNm(), "담당부처 미제공");
-                String org      = nzOr(dtl.getJurOrgNm(), "담당기관 미제공");
+                String dept     = nzOr(item.getJurMnofNm(), dtl.getJurMnofNm(), "담당부처 미제공");
+                String org      = nzOr(item.getJurOrgNm(), dtl.getJurOrgNm(), "담당기관 미제공");
                 String detailInfo = Optional.ofNullable(dtl.getBasfrmList())
                         .orElse(List.of())
                         .stream()
@@ -96,11 +97,15 @@ public class CentralWelfareSyncService {
                     Welfare newWelfare = Welfare.builder()
                             .servId(servId)
                             .title(title)
+                            .summary(summary)
                             .content(outline)
                             .servLink(link)
-                            .ctpvNm("지역정보없음")
-                            .sggNm("지역정보없음")
+                            .ctpvNm("전국")
+                            .sggNm("전국")
                             .eligibleUser(eligible)
+                            .department(dept)
+                            .org(org)
+                            .detailInfo(detailInfo)
                             .sourceType(SourceType.CENTRAL)
                             .category(category)
                             .build();
@@ -113,7 +118,7 @@ public class CentralWelfareSyncService {
                             !Objects.equals(welfare.getEligibleUser(), eligible)) {
 
                         welfare.update(
-                                title,
+                                summary,
                                 outline,
                                 link,
                                 dept,
@@ -132,7 +137,7 @@ public class CentralWelfareSyncService {
                     }
 
                     if (isBlank(welfare.getCtpvNm()) || isBlank(welfare.getSggNm())) {
-                        welfare.updateRegion("지역정보없음", "지역정보없음");
+                        welfare.updateRegion("전국", "전국");
                         updated = true;
                     }
 
