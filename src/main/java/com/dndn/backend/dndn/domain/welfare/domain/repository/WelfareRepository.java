@@ -4,6 +4,8 @@ import com.dndn.backend.dndn.domain.category.domain.enums.HouseholdType;
 import com.dndn.backend.dndn.domain.category.domain.enums.InterestTopic;
 import com.dndn.backend.dndn.domain.category.domain.enums.LifeCycle;
 import com.dndn.backend.dndn.domain.welfare.domain.Welfare;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,10 +17,10 @@ import java.util.Optional;
 @Repository
 public interface WelfareRepository extends JpaRepository<Welfare, Long> {
 
-    List<Welfare> findByTitleContaining(String keyword);
+    Page<Welfare> findByTitleContaining(String keyword, Pageable pageable);
     Optional<Welfare> findByServId(String servId);
 
-    @Query("""
+    @Query(value = """
     select distinct w
     from Welfare w
       join w.category c
@@ -28,16 +30,28 @@ public interface WelfareRepository extends JpaRepository<Welfare, Long> {
     where lc = :lifeCycle
       and (:householdsEmpty = true or hh in :households)
       and (:interestsEmpty = true or it in :interests)
+    """,
+    countQuery = """
+    select count(distinct w)
+    from Welfare w
+      join w.category c
+      join c.lifeCycles lc
+      left join c.householdTypes hh
+      left join c.interestTopics it
+    where lc = :lifeCycle
+      and (:householdsEmpty = true or hh in :households)
+      and (:interestsEmpty = true or it in :interests)
     """)
-    List<Welfare> findByCategoryFilters(
+    Page<Welfare> findByCategoryFilters(
             @Param("lifeCycle") LifeCycle lifeCycle,
             @Param("households") List<HouseholdType> households,
             @Param("householdsEmpty") boolean householdsEmpty,
             @Param("interests") List<InterestTopic> interests,
-            @Param("interestsEmpty") boolean interestsEmpty
+            @Param("interestsEmpty") boolean interestsEmpty,
+            Pageable pageable
     );
 
-    @Query("""
+    @Query(value = """
     select distinct w
     from Welfare w
     join w.category c
@@ -51,14 +65,30 @@ public interface WelfareRepository extends JpaRepository<Welfare, Long> {
     and lc = :lifeCycle
     and (:householdsEmpty = true or hh in :households)
     and (:interestsEmpty = true or it in :interests)
+    """,
+    countQuery = """
+    select count(distinct w)
+    from Welfare w
+    join w.category c
+    join c.lifeCycles lc
+    left join c.householdTypes hh
+    left join c.interestTopics it
+    where (
+        lower(coalesce(w.title, '')) like concat('%', lower(:keyword), '%')
+        or lower(concat(coalesce(w.content, ''), '')) like concat('%', lower(:keyword), '%')
+    )
+    and lc = :lifeCycle
+    and (:householdsEmpty = true or hh in :households)
+    and (:interestsEmpty = true or it in :interests)
     """)
-    List<Welfare> searchByKeywordAndCategory(
+    Page<Welfare> searchByKeywordAndCategory(
             @Param("keyword") String keyword,
             @Param("lifeCycle") LifeCycle lifeCycle,
             @Param("households") List<HouseholdType> households,
             @Param("householdsEmpty") boolean householdsEmpty,
             @Param("interests") List<InterestTopic> interests,
-            @Param("interestsEmpty") boolean interestsEmpty
+            @Param("interestsEmpty") boolean interestsEmpty,
+            Pageable pageable
     );
 
     @Query("""
