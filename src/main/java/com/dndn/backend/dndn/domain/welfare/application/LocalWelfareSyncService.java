@@ -30,11 +30,13 @@ public class LocalWelfareSyncService {
     private final LocalWelfareClient localClient;
     private final CategoryService categoryService;
 
-    public void syncLocalWelfareData() {
+    public int syncLocalWelfareData(int maxCount) {
+        int numOfRows = Math.min(maxCount, 100);
         int page = 1;
-        int numOfRows = 100;
+        int processed = 0;
+        int skipped = 0;
 
-        while (true) {
+        while (processed < maxCount) {
             LocalListResDto listDto = localClient.getWelfareList(page, numOfRows);
             if (listDto == null || listDto.getServList() == null || listDto.getServList().isEmpty()) {
                 log.info("[지자체 동기화] {} 페이지에 더 이상 데이터 없음. 종료", page);
@@ -44,6 +46,9 @@ public class LocalWelfareSyncService {
             log.info("[지자체 동기화] {} 페이지, {}건 처리 시작", page, listDto.getServList().size());
 
             for (LocalListResDto.ServiceItem item : listDto.getServList()) {
+                if (processed >= maxCount) break;
+                processed++;
+                try {
                 String servId = item.getServId();
                 if (isBlank(servId)) continue;
 
@@ -54,12 +59,8 @@ public class LocalWelfareSyncService {
                     continue;
                 }
 
-                // ✅ 상세 DTO 값 로그 확인
-                log.info("servId={} servDgst={}", servId, detail.getServDgst());
-                log.info("servId={} basfrmList from API: {}", servId, detail.getBasfrmList());
-                log.info("servId={} aplyDocList from API: {}", servId, detail.getAplyDocList());
-
                 // 카테고리 매핑
+                // 지자체는 생애주기/가구상황이 LIST엔 없고 DETAIL에만 오므로 detail 우선
                 String lifeSrc  = nzOr(detail.getLifeNmArray(), item.getLifeNmArray());
                 String hhSrc    = nzOr(detail.getTrgterIndvdlNmArray(), item.getTrgterIndvdlNmArray());
                 String intrsSrc = nzOr(detail.getIntrsThemaNmArray(), item.getIntrsThemaNmArray());
@@ -160,13 +161,19 @@ public class LocalWelfareSyncService {
 
                     if (updated) welfareRepository.save(welfare);
                 }
+                } catch (Exception e) {
+                    skipped++;
+                    log.warn("[지자체 동기화] 항목 스킵 (servId={}) - {}", item.getServId(), e.getMessage());
+                }
             }
 
-            log.info("[지자체 동기화] {} 페이지 처리 완료", page);
+            log.info("[지자체 동기화] {} 페이지 처리 완료 (누적 {}건)", page, processed);
             page++;
         }
 
-        log.info("[지자체 동기화] 전체 동기화 완료");
+        int success = processed - skipped;
+        log.info("[지자체 동기화] 동기화 완료 - 시도 {}, 성공 {}, 스킵 {}", processed, success, skipped);
+        return success;
     }
 
     private static boolean isBlank(String s) { return s == null || s.isBlank(); }
