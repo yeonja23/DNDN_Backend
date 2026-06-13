@@ -32,11 +32,13 @@ public class CentralWelfareSyncService {
     private final CentralWelfareClient centralClient;
     private final CategoryService categoryService;
 
-    public void syncCentralWelfareData() {
+    public int syncCentralWelfareData(int maxCount) {
+        int numOfRows = Math.min(maxCount, 100);
         int page = 1;
-        int numOfRows = 100;
+        int processed = 0;
+        int skipped = 0;
 
-        while (true) {
+        while (processed < maxCount) {
             CentralListResDto list = centralClient.getWelfareList(page, numOfRows);
             log.info("[동기화] {}페이지 응답 도착", page);
 
@@ -50,6 +52,9 @@ public class CentralWelfareSyncService {
             log.info("[동기화] {}개의 서비스 처리 시작", items.size());
 
             for (CentralListResDto.ServiceItem item : items) {
+                if (processed >= maxCount) break;
+                processed++;
+                try {
                 String servId = item.getServId();
                 if (isBlank(servId)) continue;
 
@@ -133,13 +138,19 @@ public class CentralWelfareSyncService {
 
                     if (updated) welfareRepository.save(welfare);
                 }
+                } catch (Exception e) {
+                    skipped++;
+                    log.warn("[중앙복지] 항목 스킵 (servId={}) - {}", item.getServId(), e.getMessage());
+                }
             }
 
-            log.info("[복지 동기화] {}페이지 동기화 완료", page);
+            log.info("[복지 동기화] {}페이지 처리 완료 (누적 {}건)", page, processed);
             page++;
         }
 
-        log.info("[복지 동기화] 중앙부처 전체 동기화 완료");
+        int success = processed - skipped;
+        log.info("[복지 동기화] 중앙부처 동기화 완료 - 시도 {}, 성공 {}, 스킵 {}", processed, success, skipped);
+        return success;
     }
 
     /* ---------- helpers ---------- */
