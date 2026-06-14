@@ -8,6 +8,7 @@
 
 <img width="7680" height="4320" alt="든든compression" src="https://github.com/user-attachments/assets/cf0901e9-8b97-4ac7-928f-d96e4e362250" />
 
+## 📖 **프로젝트 전체 소개 →** https://github.com/NEXUS-DNDN
 
 ## 👨‍👩‍👧‍👦 Back Team
 
