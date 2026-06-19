@@ -18,22 +18,18 @@ public record InterestInfoResDto(
 ) {
     public static InterestInfoResDto from(Interest interest) {
         var welfare = interest.getWelfare();
-        var category = welfare.getCategory();
 
-        List<String> lifeCycleNames = (category == null) ? List.of()
-                : category.getLifeCycles().stream()
+        List<String> lifeCycleNames = welfare.getLifeCycles().stream()
                 .map(it -> it.getKor())
                 .distinct()
                 .toList();
 
-        List<String> householdTypeNames = (category == null) ? List.of()
-                : category.getHouseholdTypes().stream()
+        List<String> householdTypeNames = welfare.getHouseholdTypes().stream()
                 .map(it -> it.getKor())
                 .distinct()
                 .toList();
 
-        List<String> interestTopicNames = (category == null) ? List.of()
-                : category.getInterestTopics().stream()
+        List<String> interestTopicNames = welfare.getInterestTopics().stream()
                 .map(it -> it.getKor())
                 .distinct()
                 .toList();

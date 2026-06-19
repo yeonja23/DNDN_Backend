@@ -1,10 +1,8 @@
 package com.dndn.backend.dndn.domain.welfare.application;
 
-import com.dndn.backend.dndn.domain.category.application.CategoryService;
-import com.dndn.backend.dndn.domain.category.domain.Category;
-import com.dndn.backend.dndn.domain.category.domain.enums.HouseholdType;
-import com.dndn.backend.dndn.domain.category.domain.enums.InterestTopic;
-import com.dndn.backend.dndn.domain.category.domain.enums.LifeCycle;
+import com.dndn.backend.dndn.domain.model.enums.HouseholdType;
+import com.dndn.backend.dndn.domain.model.enums.InterestTopic;
+import com.dndn.backend.dndn.domain.model.enums.LifeCycle;
 import com.dndn.backend.dndn.domain.welfare.domain.Welfare;
 import com.dndn.backend.dndn.domain.welfare.domain.enums.SourceType;
 import com.dndn.backend.dndn.domain.welfare.domain.repository.WelfareRepository;
@@ -16,10 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import static com.dndn.backend.dndn.domain.category.util.CategoryParserUtils.*;
+import static com.dndn.backend.dndn.domain.welfare.support.CategoryParserUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +27,6 @@ public class LocalWelfareSyncService {
 
     private final WelfareRepository welfareRepository;
     private final LocalWelfareClient localClient;
-    private final CategoryService categoryService;
 
     public int syncLocalWelfareData(int maxCount) {
         int numOfRows = Math.min(maxCount, 100);
@@ -68,11 +66,6 @@ public class LocalWelfareSyncService {
                 List<LifeCycle> life = parseLifeCycles(nz(lifeSrc));
                 List<HouseholdType> hh = parseHouseholdTypes(nz(hhSrc));
                 List<InterestTopic> it = parseInterestTopics(nz(intrsSrc));
-                Category category = categoryService.findOrCreateCategory(life, hh, it);
-                if (category == null) {
-                    log.warn("[지자체 동기화] 카테고리 null (servId={})", servId);
-                    continue;
-                }
 
                 String org = Optional.ofNullable(detail.getInqplCtadrList())
                         .orElse(List.of())
@@ -107,7 +100,9 @@ public class LocalWelfareSyncService {
                             .sourceType(SourceType.LOCAL)
                             .ctpvNm(item.getCtpvNm())
                             .sggNm(item.getSggNm())
-                            .category(category)
+                            .lifeCycles(new HashSet<>(life))
+                            .householdTypes(new HashSet<>(hh))
+                            .interestTopics(new HashSet<>(it))
                             .build());
                 } else {
                     // 새로운 값 추출
@@ -145,12 +140,10 @@ public class LocalWelfareSyncService {
                     }
 
                     // 카테고리
-                    if (welfare.getCategory() == null ||
-                            welfare.getCategory().getId() == null ||
-                            !welfare.getCategory().getId().equals(category.getId())) {
-                        welfare.updateCategory(category);
-                        updated = true;
-                    }
+                    welfare.updateCategories(new HashSet<>(life),
+                            new HashSet<>(hh),
+                            new HashSet<>(it));
+                    updated = true;
 
                     // 지역
                     if (!safeEq(welfare.getCtpvNm(), item.getCtpvNm()) ||

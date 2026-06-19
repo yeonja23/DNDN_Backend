@@ -15,8 +15,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     select distinct a
     from Application a
     join fetch a.welfare w
-    join fetch w.category c
-    left join fetch c.lifeCycles lc
+    left join fetch w.lifeCycles lc
     where a.user.id = :userId
     and a.receiveStatus = :status
     order by a.appliedAt desc

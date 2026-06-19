@@ -1,8 +1,8 @@
 package com.dndn.backend.dndn.domain.user.service;
 
 
-import com.dndn.backend.dndn.domain.category.domain.enums.HouseholdType;
-import com.dndn.backend.dndn.domain.category.domain.enums.LifeCycle;
+import com.dndn.backend.dndn.domain.model.enums.HouseholdType;
+import com.dndn.backend.dndn.domain.model.enums.LifeCycle;
 import com.dndn.backend.dndn.domain.model.exception.UserException;
 import com.dndn.backend.dndn.domain.user.domain.entity.Disabled;
 import com.dndn.backend.dndn.domain.user.domain.entity.Senior;
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.dndn.backend.dndn.domain.category.domain.enums.LifeCycle.SENIOR;
+import static com.dndn.backend.dndn.domain.model.enums.LifeCycle.SENIOR;
 
 
 @Service

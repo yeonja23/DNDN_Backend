@@ -20,7 +20,6 @@ public interface InterestRepository extends JpaRepository<Interest, Long> {
    select distinct i
    from Interest i
    join fetch i.welfare w
-   left join fetch w.category c
    where i.user.id = :userId
      and (:status is null or i.interestStatus = :status)
    """)

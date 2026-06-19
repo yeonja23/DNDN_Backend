@@ -1,4 +1,4 @@
-package com.dndn.backend.dndn.domain.category.domain.enums;
+package com.dndn.backend.dndn.domain.model.enums;
 
 import lombok.Getter;
 
@@ -26,14 +26,4 @@ public enum InterestTopic {
     InterestTopic(String kor) {
         this.kor = kor;
     }
-
-    public static InterestTopic fromKor(String kor) {
-        for (InterestTopic value : values()) {
-            if (value.kor.equals(kor)) {
-                return value;
-            }
-        }
-        throw new IllegalArgumentException("존재하지 않는 관심주제: " + kor);
-    }
 }
-
