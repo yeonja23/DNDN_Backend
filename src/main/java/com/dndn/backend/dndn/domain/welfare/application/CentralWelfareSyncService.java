@@ -1,10 +1,8 @@
 package com.dndn.backend.dndn.domain.welfare.application;
 
-import com.dndn.backend.dndn.domain.category.application.CategoryService;
-import com.dndn.backend.dndn.domain.category.domain.Category;
-import com.dndn.backend.dndn.domain.category.domain.enums.HouseholdType;
-import com.dndn.backend.dndn.domain.category.domain.enums.InterestTopic;
-import com.dndn.backend.dndn.domain.category.domain.enums.LifeCycle;
+import com.dndn.backend.dndn.domain.model.enums.HouseholdType;
+import com.dndn.backend.dndn.domain.model.enums.InterestTopic;
+import com.dndn.backend.dndn.domain.model.enums.LifeCycle;
 import com.dndn.backend.dndn.domain.welfare.domain.Welfare;
 import com.dndn.backend.dndn.domain.welfare.domain.enums.SourceType;
 import com.dndn.backend.dndn.domain.welfare.domain.repository.WelfareRepository;
@@ -16,12 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.dndn.backend.dndn.domain.category.util.CategoryParserUtils.*;
+import static com.dndn.backend.dndn.domain.welfare.support.CategoryParserUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +29,6 @@ public class CentralWelfareSyncService {
 
     private final WelfareRepository welfareRepository;
     private final CentralWelfareClient centralClient;
-    private final CategoryService categoryService;
 
     public int syncCentralWelfareData(int maxCount) {
         int numOfRows = Math.min(maxCount, 100);
@@ -85,11 +83,6 @@ public class CentralWelfareSyncService {
                 List<LifeCycle> lifeCycles     = parseLifeCycles(nzOr(item.getLifeArray(), dtl.getLifeArray()));
                 List<HouseholdType> household  = parseHouseholdTypes(nzOr(item.getTrgterIndvdlArray(), dtl.getTrgterIndvdlArray()));
                 List<InterestTopic> interests  = parseInterestTopics(nzOr(item.getIntrsThemaArray(), dtl.getIntrsThemaArray()));
-                Category category = categoryService.findOrCreateCategory(lifeCycles, household, interests);
-                if (category == null) {
-                    log.warn("카테고리 null (servId={})", servId);
-                    continue;
-                }
 
                 Welfare welfare = welfareRepository.findByServId(servId).orElse(null);
 
@@ -107,7 +100,9 @@ public class CentralWelfareSyncService {
                             .org(org)
                             .detailInfo(detailInfo)
                             .sourceType(SourceType.CENTRAL)
-                            .category(category)
+                            .lifeCycles(new HashSet<>(lifeCycles))
+                            .householdTypes(new HashSet<>(household))
+                            .interestTopics(new HashSet<>(interests))
                             .build();
                     welfareRepository.save(newWelfare);
                 } else {
@@ -130,11 +125,10 @@ public class CentralWelfareSyncService {
                         updated = true;
                     }
 
-                    if (welfare.getCategory() == null ||
-                            !Objects.equals(welfare.getCategory().getId(), category.getId())) {
-                        welfare.updateCategory(category);
-                        updated = true;
-                    }
+                    welfare.updateCategories(new HashSet<>(lifeCycles),
+                            new HashSet<>(household),
+                            new HashSet<>(interests));
+                    updated = true;
 
                     if (isBlank(welfare.getCtpvNm()) || isBlank(welfare.getSggNm())) {
                         welfare.updateRegion("전국", "전국");

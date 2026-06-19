@@ -1,14 +1,19 @@
 package com.dndn.backend.dndn.domain.welfare.domain;
 
-import com.dndn.backend.dndn.domain.category.domain.Category;
+import com.dndn.backend.dndn.domain.model.enums.HouseholdType;
+import com.dndn.backend.dndn.domain.model.enums.InterestTopic;
+import com.dndn.backend.dndn.domain.model.enums.LifeCycle;
 import com.dndn.backend.dndn.domain.model.entity.BaseEntity;
 import com.dndn.backend.dndn.domain.welfare.domain.enums.SourceType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -64,10 +69,29 @@ public class Welfare extends BaseEntity {
     private String summary;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    @JsonIgnore
-    private Category category;
+    // 생애주기
+    @ElementCollection(fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "welfare_life_cycle", joinColumns = @JoinColumn(name = "welfare_id"))
+    @Column(name = "life_cycle")
+    @BatchSize(size = 100)
+    private Set<LifeCycle> lifeCycles = new HashSet<>();
+
+    // 가구유형
+    @ElementCollection(fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "welfare_household_type", joinColumns = @JoinColumn(name = "welfare_id"))
+    @Column(name = "household_type")
+    @BatchSize(size = 100)
+    private Set<HouseholdType> householdTypes = new HashSet<>();
+
+    // 관심주제
+    @ElementCollection(fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "welfare_interest_topic", joinColumns = @JoinColumn(name = "welfare_id"))
+    @Column(name = "interest_topic")
+    @BatchSize(size = 100)
+    private Set<InterestTopic> interestTopics = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "source_type", nullable = false, length = 20)
@@ -77,7 +101,8 @@ public class Welfare extends BaseEntity {
     private Welfare(String servId, String title, String summary , String content, String servLink,
                     String ctpvNm, String sggNm, String eligibleUser,
                     String detailInfo, String department, String org,
-                    SourceType sourceType, Category category) {
+                    SourceType sourceType,
+                    Set<LifeCycle> lifeCycles, Set<HouseholdType> householdTypes, Set<InterestTopic> interestTopics) {
         this.servId = servId;
         this.title = title;
         this.summary = summary;
@@ -90,11 +115,17 @@ public class Welfare extends BaseEntity {
         this.department = department;
         this.org = org;
         this.sourceType = sourceType;
-        this.category = category;
+        this.lifeCycles = lifeCycles != null ? lifeCycles : new HashSet<>();
+        this.householdTypes = householdTypes != null ? householdTypes : new HashSet<>();
+        this.interestTopics = interestTopics != null ? interestTopics : new HashSet<>();
     }
 
-    public void updateCategory(Category category) {
-        this.category = category;
+    public void updateCategories(Set<LifeCycle> lifeCycles,
+                                 Set<HouseholdType> householdTypes,
+                                 Set<InterestTopic> interestTopics) {
+        this.lifeCycles = lifeCycles;
+        this.householdTypes = householdTypes;
+        this.interestTopics = interestTopics;
     }
 
     public void updateRegion(String ctpvNm, String sggNm) {

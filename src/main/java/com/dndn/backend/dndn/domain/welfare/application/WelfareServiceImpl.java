@@ -1,8 +1,8 @@
 package com.dndn.backend.dndn.domain.welfare.application;
 
-import com.dndn.backend.dndn.domain.category.domain.enums.HouseholdType;
-import com.dndn.backend.dndn.domain.category.domain.enums.InterestTopic;
-import com.dndn.backend.dndn.domain.category.domain.enums.LifeCycle;
+import com.dndn.backend.dndn.domain.model.enums.HouseholdType;
+import com.dndn.backend.dndn.domain.model.enums.InterestTopic;
+import com.dndn.backend.dndn.domain.model.enums.LifeCycle;
 import com.dndn.backend.dndn.domain.user.domain.entity.User;
 import com.dndn.backend.dndn.domain.user.domain.repository.UserRepository;
 import com.dndn.backend.dndn.domain.welfare.api.response.WelfareDetailResDto;
@@ -98,7 +98,7 @@ public class WelfareServiceImpl implements WelfareService {
 
     @Override
     public List<Welfare> getRecommendedWelfares(User user) {
-        List<Welfare> all = welfareRepository.findAllWithCategory();
+        List<Welfare> all = welfareRepository.findAll();
 
         return all.stream()
                 .map(w -> new WelfareWithScore(w, calculateScore(user, w)))
@@ -128,13 +128,13 @@ public class WelfareServiceImpl implements WelfareService {
 
     private boolean isLifeCycleMatched(User user, Welfare welfare) {
         LifeCycle userCycle = user.getLifeCycle();
-        List<LifeCycle> targetCycles = welfare.getCategory().getLifeCycles();
+        Set<LifeCycle> targetCycles = welfare.getLifeCycles();
         return targetCycles.contains(userCycle);
     }
 
     private long countHouseholdTypeMatches(User user, Welfare welfare) {
         Set<HouseholdType> userTypes = user.getHouseholdTypes();
-        List<HouseholdType> targetTypes = welfare.getCategory().getHouseholdTypes();
+        Set<HouseholdType> targetTypes = welfare.getHouseholdTypes();
         return targetTypes.stream()
                 .filter(userTypes::contains)
                 .count();

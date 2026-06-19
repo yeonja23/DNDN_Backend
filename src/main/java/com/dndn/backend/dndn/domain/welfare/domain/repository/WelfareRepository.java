@@ -1,8 +1,8 @@
 package com.dndn.backend.dndn.domain.welfare.domain.repository;
 
-import com.dndn.backend.dndn.domain.category.domain.enums.HouseholdType;
-import com.dndn.backend.dndn.domain.category.domain.enums.InterestTopic;
-import com.dndn.backend.dndn.domain.category.domain.enums.LifeCycle;
+import com.dndn.backend.dndn.domain.model.enums.HouseholdType;
+import com.dndn.backend.dndn.domain.model.enums.InterestTopic;
+import com.dndn.backend.dndn.domain.model.enums.LifeCycle;
 import com.dndn.backend.dndn.domain.welfare.domain.Welfare;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,10 +23,9 @@ public interface WelfareRepository extends JpaRepository<Welfare, Long> {
     @Query(value = """
     select distinct w
     from Welfare w
-      join w.category c
-      join c.lifeCycles lc
-      left join c.householdTypes hh
-      left join c.interestTopics it
+      join w.lifeCycles lc
+      left join w.householdTypes hh
+      left join w.interestTopics it
     where lc = :lifeCycle
       and (:householdsEmpty = true or hh in :households)
       and (:interestsEmpty = true or it in :interests)
@@ -34,10 +33,9 @@ public interface WelfareRepository extends JpaRepository<Welfare, Long> {
     countQuery = """
     select count(distinct w)
     from Welfare w
-      join w.category c
-      join c.lifeCycles lc
-      left join c.householdTypes hh
-      left join c.interestTopics it
+      join w.lifeCycles lc
+      left join w.householdTypes hh
+      left join w.interestTopics it
     where lc = :lifeCycle
       and (:householdsEmpty = true or hh in :households)
       and (:interestsEmpty = true or it in :interests)
@@ -54,10 +52,9 @@ public interface WelfareRepository extends JpaRepository<Welfare, Long> {
     @Query(value = """
     select distinct w
     from Welfare w
-    join w.category c
-    join c.lifeCycles lc
-    left join c.householdTypes hh
-    left join c.interestTopics it
+    join w.lifeCycles lc
+    left join w.householdTypes hh
+    left join w.interestTopics it
     where (
         lower(coalesce(w.title, '')) like concat('%', lower(:keyword), '%')
         or lower(concat(coalesce(w.content, ''), '')) like concat('%', lower(:keyword), '%')
@@ -69,10 +66,9 @@ public interface WelfareRepository extends JpaRepository<Welfare, Long> {
     countQuery = """
     select count(distinct w)
     from Welfare w
-    join w.category c
-    join c.lifeCycles lc
-    left join c.householdTypes hh
-    left join c.interestTopics it
+    join w.lifeCycles lc
+    left join w.householdTypes hh
+    left join w.interestTopics it
     where (
         lower(coalesce(w.title, '')) like concat('%', lower(:keyword), '%')
         or lower(concat(coalesce(w.content, ''), '')) like concat('%', lower(:keyword), '%')
@@ -90,11 +86,5 @@ public interface WelfareRepository extends JpaRepository<Welfare, Long> {
             @Param("interestsEmpty") boolean interestsEmpty,
             Pageable pageable
     );
-
-    @Query("""
-    select distinct w from Welfare w
-    join fetch w.category
-""")
-    List<Welfare> findAllWithCategory();
 
 }

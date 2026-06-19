@@ -2,7 +2,7 @@ package com.dndn.backend.dndn.domain.application.api.dto.response;
 
 import com.dndn.backend.dndn.domain.application.domain.Application;
 import com.dndn.backend.dndn.domain.application.domain.enums.ReceiveStatus;
-import com.dndn.backend.dndn.domain.category.domain.enums.LifeCycle;
+import com.dndn.backend.dndn.domain.model.enums.LifeCycle;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -31,7 +31,7 @@ public record ApplicationInfoResDto(
                 .appliedAt(application.getAppliedAt())
                 .receiveStatus(application.getReceiveStatus())
                 .servLink(application.getWelfare().getServLink())
-                .lifeCycles(application.getWelfare().getCategory().getLifeCycles())
+                .lifeCycles(List.copyOf(application.getWelfare().getLifeCycles()))
                 .summary(application.getWelfare().getSummary())
                 .build();
     }

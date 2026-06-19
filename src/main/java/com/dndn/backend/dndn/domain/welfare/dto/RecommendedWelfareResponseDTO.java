@@ -1,8 +1,7 @@
 package com.dndn.backend.dndn.domain.welfare.dto;
 
-import com.dndn.backend.dndn.domain.category.domain.Category;
-import com.dndn.backend.dndn.domain.category.domain.enums.HouseholdType;
-import com.dndn.backend.dndn.domain.category.domain.enums.LifeCycle;
+import com.dndn.backend.dndn.domain.model.enums.HouseholdType;
+import com.dndn.backend.dndn.domain.model.enums.LifeCycle;
 import com.dndn.backend.dndn.domain.welfare.domain.Welfare;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,15 +23,13 @@ public class RecommendedWelfareResponseDTO {
     private String region; // ex: "서울특별시 양천구"
 
     public static RecommendedWelfareResponseDTO from(Welfare w) {
-        Category category = w.getCategory();
-
         return new RecommendedWelfareResponseDTO(
                 w.getId(),
                 w.getTitle(),
                 w.getSummary(),
                 w.getDepartment(),
-                category.getLifeCycles(),
-                category.getHouseholdTypes(),
+                List.copyOf(w.getLifeCycles()),
+                List.copyOf(w.getHouseholdTypes()),
                 w.getCtpvNm() + " " + w.getSggNm()
         );
     }
