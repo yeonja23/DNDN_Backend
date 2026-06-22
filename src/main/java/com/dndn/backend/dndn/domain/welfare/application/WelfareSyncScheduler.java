@@ -1,8 +1,8 @@
 package com.dndn.backend.dndn.domain.welfare.application;
 
-import com.dndn.backend.dndn.domain.welfareOpenApi.central.client.CentralWelfareClient;
-import com.dndn.backend.dndn.domain.welfareOpenApi.local.client.LocalWelfareClient;
-import com.dndn.backend.dndn.domain.welfareOpenApi.local.dto.response.LocalDetailResDto;
+import com.dndn.backend.dndn.domain.welfare.infra.central.client.CentralWelfareClient;
+import com.dndn.backend.dndn.domain.welfare.infra.local.client.LocalWelfareClient;
+import com.dndn.backend.dndn.domain.welfare.infra.local.dto.response.LocalDetailResDto;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

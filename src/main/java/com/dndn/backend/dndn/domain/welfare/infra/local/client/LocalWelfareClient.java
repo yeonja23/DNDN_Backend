@@ -1,7 +1,7 @@
-package com.dndn.backend.dndn.domain.welfareOpenApi.local.client;
+package com.dndn.backend.dndn.domain.welfare.infra.local.client;
 
-import com.dndn.backend.dndn.domain.welfareOpenApi.local.dto.response.LocalDetailResDto;
-import com.dndn.backend.dndn.domain.welfareOpenApi.local.dto.response.LocalListResDto;
+import com.dndn.backend.dndn.domain.welfare.infra.local.dto.response.LocalDetailResDto;
+import com.dndn.backend.dndn.domain.welfare.infra.local.dto.response.LocalListResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;

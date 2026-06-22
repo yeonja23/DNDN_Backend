@@ -1,4 +1,4 @@
-package com.dndn.backend.dndn.domain.welfareOpenApi.local.dto.response;
+package com.dndn.backend.dndn.domain.welfare.infra.local.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
