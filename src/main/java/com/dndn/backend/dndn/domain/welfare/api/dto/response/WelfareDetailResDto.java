@@ -1,4 +1,4 @@
-package com.dndn.backend.dndn.domain.welfare.api.response;
+package com.dndn.backend.dndn.domain.welfare.api.dto.response;
 
 import com.dndn.backend.dndn.domain.welfare.domain.enums.SourceType;
 import com.dndn.backend.dndn.domain.welfare.domain.Welfare;

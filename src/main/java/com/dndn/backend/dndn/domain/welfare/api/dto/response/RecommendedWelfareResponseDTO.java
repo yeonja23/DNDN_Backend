@@ -1,4 +1,4 @@
-package com.dndn.backend.dndn.domain.welfare.dto;
+package com.dndn.backend.dndn.domain.welfare.api.dto.response;
 
 import com.dndn.backend.dndn.domain.model.enums.HouseholdType;
 import com.dndn.backend.dndn.domain.model.enums.LifeCycle;

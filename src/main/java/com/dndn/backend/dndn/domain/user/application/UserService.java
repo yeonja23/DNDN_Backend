@@ -1,4 +1,4 @@
-package com.dndn.backend.dndn.domain.user.service;
+package com.dndn.backend.dndn.domain.user.application;
 
 
 import com.dndn.backend.dndn.domain.model.enums.HouseholdType;

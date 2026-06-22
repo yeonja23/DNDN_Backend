@@ -5,7 +5,7 @@ import com.dndn.backend.dndn.domain.user.domain.entity.Disabled;
 import com.dndn.backend.dndn.domain.user.domain.entity.Senior;
 import com.dndn.backend.dndn.domain.user.domain.entity.User;
 import com.dndn.backend.dndn.domain.user.dto.*;
-import com.dndn.backend.dndn.domain.user.service.UserService;
+import com.dndn.backend.dndn.domain.user.application.UserService;
 import com.dndn.backend.dndn.global.common.response.BaseResponse;
 import com.dndn.backend.dndn.global.config.security.auth.UserPrincipal;
 import com.dndn.backend.dndn.global.error.code.status.SuccessStatus;
