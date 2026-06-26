@@ -1,7 +1,7 @@
 package com.dndn.backend.dndn.domain.welfare.api;
 
-import com.dndn.backend.dndn.domain.welfare.application.CentralWelfareSyncService;
-import com.dndn.backend.dndn.domain.welfare.application.LocalWelfareSyncService;
+import com.dndn.backend.dndn.domain.welfare.application.sync.CentralWelfareSyncService;
+import com.dndn.backend.dndn.domain.welfare.application.sync.LocalWelfareSyncService;
 import com.dndn.backend.dndn.global.common.response.BaseResponse;
 import com.dndn.backend.dndn.global.error.code.status.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;
