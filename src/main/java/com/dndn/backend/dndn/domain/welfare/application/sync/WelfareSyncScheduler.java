@@ -1,4 +1,4 @@
-package com.dndn.backend.dndn.domain.welfare.application;
+package com.dndn.backend.dndn.domain.welfare.application.sync;
 
 import com.dndn.backend.dndn.domain.welfare.infra.central.client.CentralWelfareClient;
 import com.dndn.backend.dndn.domain.welfare.infra.local.client.LocalWelfareClient;
